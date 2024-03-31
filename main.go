@@ -8,6 +8,7 @@ import (
 	"sync"
 
 	"github.com/textures1245/practical-examples/examples/concurrently"
+	"github.com/textures1245/practical-examples/examples/generic"
 	"github.com/textures1245/practical-examples/examples/resource"
 )
 
@@ -21,6 +22,8 @@ func (t *task) run() {
 		resourceTask()
 	case 2:
 		concurrentlyTask()
+	case 3:
+		genericTask()
 	default:
 		fmt.Println("Invalid option")
 	}
@@ -28,7 +31,7 @@ func (t *task) run() {
 }
 
 func main() {
-	t := task{opt: 2}
+	t := task{opt: 3}
 	t.run()
 }
 
@@ -145,4 +148,24 @@ func concurrentlyTask() {
 		}()
 	}
 	fmt.Println(<-res3)
+}
+
+func genericTask() {
+	// -\ Implement a generic function and structs and achieved assign by the following
+	sum1 := generic.Generic[int]{}
+	fmt.Println(sum1.Sum([]int{1, 2, 3, 4, 5}))
+	fmt.Println(sum1.Pos.GetElemsSumHistory())
+
+	sum2 := generic.Generic[string]{}
+	fmt.Println(sum2.Sum([]string{"a", "b", "c", "d", "e"}).(string))
+	fmt.Println(sum2.Pos.GetElemsSumHistory())
+	fmt.Println(sum2.Sum([]string{"a", "b", "c", "d", "e", "f"}).(string))
+	fmt.Println(sum2.Pos.GetElemsSumHistory())
+
+	// //- Write a program that simulates a client-server interaction, where the client sends a multiply requests and waits for a response with a timeout.
+	// urls := []string{"https://json3placeholder.typicode.com/todos/1", "https://jsonplac3eholder.typicode.com/todos/2", "https://jsonplac3eholder.typicode.com/todos/3"}
+	// task3 := generic.Client{Results: make(chan string, len(urls))}
+
+	// task3.OnSendReqs(urls)
+
 }
