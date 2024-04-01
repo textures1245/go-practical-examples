@@ -208,6 +208,8 @@ func errorTask() {
 
 	for _, nums := range arrNum {
 
+		// store nums to local variable for each new iteration to prevent race condition
+		// when working as concurrently
 		s := nums
 		jobs1 <- func() int32 {
 			return counter.Sum(s)
