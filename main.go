@@ -8,6 +8,7 @@ import (
 	"sync"
 
 	"github.com/textures1245/practical-examples/examples/concurrently"
+	"github.com/textures1245/practical-examples/examples/error"
 	"github.com/textures1245/practical-examples/examples/generic"
 	"github.com/textures1245/practical-examples/examples/resource"
 )
@@ -24,6 +25,8 @@ func (t *task) run() {
 		concurrentlyTask()
 	case 3:
 		genericTask()
+	case 4:
+		errorTask()
 	default:
 		fmt.Println("Invalid option")
 	}
@@ -31,7 +34,7 @@ func (t *task) run() {
 }
 
 func main() {
-	t := task{opt: 3}
+	t := task{opt: 4}
 	t.run()
 }
 
@@ -167,5 +170,56 @@ func genericTask() {
 	// task3 := generic.Client{Results: make(chan string, len(urls))}
 
 	// task3.OnSendReqs(urls)
+
+}
+
+func errorTask() {
+
+	// - Write a function that reads data from a file and handles various errors that may occur during the process.
+	f := error.File{}
+	f.Read("test.txt")
+
+	// - Implement a program that uses pointers to modify the values of variables passed to a function.
+	lst := error.List[int]{}
+	lst.ChangeTo([]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10})
+	lst.ChangeTo([]int{1, 2, 3, 4, 5})
+
+	fmt.Println(lst.GetElems())
+	lst.ChangeToHistory(0)
+	fmt.Println(lst.GetElems())
+
+	// - Create a program that uses goroutines and channels to perform a parallel calculation, such as finding the sum of elements in a large array.
+
+	counter := error.Counter{C: 0}
+
+	var sample = []int32{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20}
+
+	arrNum := error.Divider(5, sample)
+
+	fmt.Println(arrNum)
+
+	jobs1 := make(chan func() int32, len(arrNum))
+	res1 := make(chan int32, len(arrNum))
+
+	// create workers
+	for w := 1; w <= 3; w++ {
+		go concurrently.Worker(w, jobs1, res1)
+	}
+
+	for _, nums := range arrNum {
+
+		s := nums
+		jobs1 <- func() int32 {
+			return counter.Sum(s)
+		}
+	}
+	close(jobs1)
+
+	for a := 1; a <= len(arrNum); a++ {
+
+		fmt.Println(<-res1)
+	}
+
+	fmt.Printf("Final Value: %d\n", atomic.LoadInt32(&counter.C))
 
 }
