@@ -176,17 +176,17 @@ func genericTask() {
 func errorTask() {
 
 	// - Write a function that reads data from a file and handles various errors that may occur during the process.
-	f := error.File{}
-	f.Read("test.txt")
+	// f := error.File{}
+	// f.Read("test.txt")
 
 	// - Implement a program that uses pointers to modify the values of variables passed to a function.
-	lst := error.List[int]{}
-	lst.ChangeTo([]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10})
-	lst.ChangeTo([]int{1, 2, 3, 4, 5})
+	// lst := error.List[int]{}
+	// lst.ChangeTo([]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10})
+	// lst.ChangeTo([]int{1, 2, 3, 4, 5})
 
-	fmt.Println(lst.GetElems())
-	lst.ChangeToHistory(0)
-	fmt.Println(lst.GetElems())
+	// fmt.Println(lst.GetElems())
+	// lst.ChangeToHistory(0)
+	// fmt.Println(lst.GetElems())
 
 	// - Create a program that uses goroutines and channels to perform a parallel calculation, such as finding the sum of elements in a large array.
 

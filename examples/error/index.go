@@ -99,7 +99,6 @@ func Worker[T any](id int, job <-chan func() int32, res chan<- int32) {
 }
 
 func (p *Counter) Sum(arr []int32) int32 {
-	fmt.Println(arr)
 
 	for _, i := range arr {
 		atomic.AddInt32(&p.C, i)
