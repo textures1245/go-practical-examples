@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"sync/atomic"
+	"time"
 
 	"math/rand"
 	"sync"
@@ -11,6 +12,7 @@ import (
 	"github.com/textures1245/practical-examples/examples/error"
 	"github.com/textures1245/practical-examples/examples/generic"
 	"github.com/textures1245/practical-examples/examples/resource"
+	"github.com/textures1245/practical-examples/examples/timer"
 )
 
 type task struct {
@@ -27,6 +29,8 @@ func (t *task) run() {
 		genericTask()
 	case 4:
 		errorTask()
+	case 5:
+		timeTask()
 	default:
 		fmt.Println("Invalid option")
 	}
@@ -34,7 +38,7 @@ func (t *task) run() {
 }
 
 func main() {
-	t := task{opt: 4}
+	t := task{opt: 5}
 	t.run()
 }
 
@@ -224,4 +228,27 @@ func errorTask() {
 
 	fmt.Printf("Final Value: %d\n", atomic.LoadInt32(&counter.C))
 
+}
+
+func timeTask() {
+	t := timer.OnTick[int]{}
+	ticker := time.NewTicker(500 * time.Millisecond)
+	num := 0
+	done := make(chan bool, 1)
+	results := make(chan int)
+
+	incre := func(n *int) {
+		*n++
+	}
+
+	go t.TimestampTicker(ticker, done, results, func() int {
+		incre(&num)
+		return num
+	})
+
+	time.Sleep(4 * time.Second)
+	t.StopTicker(ticker, done)
+	for n := range results {
+		fmt.Println(n)
+	}
 }
