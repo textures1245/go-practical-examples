@@ -13,7 +13,8 @@ func (o *OnTick[T]) TimestampTicker(t *time.Ticker, done <-chan bool, res chan<-
 	for {
 		select {
 		case <-done:
-			close(res)
+			t.Stop()
+			defer close(res)
 			return
 		case t := <-t.C:
 			go func() {
@@ -25,8 +26,7 @@ func (o *OnTick[T]) TimestampTicker(t *time.Ticker, done <-chan bool, res chan<-
 	}
 }
 
-func (o *OnTick[T]) StopTicker(t *time.Ticker, done chan<- bool) {
-	t.Stop()
+func (o *OnTick[T]) StopTicker(done chan<- bool) {
 	done <- true
 	fmt.Println("Ticker stopped")
 }

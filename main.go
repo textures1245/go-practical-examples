@@ -232,6 +232,7 @@ func errorTask() {
 }
 
 func timeTask() {
+	//- create ticker handler, every tick will call the func from arg then return the result to the channel
 	t := timer.OnTick[int]{}
 	ticker := time.NewTicker(500 * time.Millisecond)
 	num := 0
@@ -248,27 +249,35 @@ func timeTask() {
 	})
 
 	time.Sleep(4 * time.Second)
-	t.StopTicker(ticker, done)
+	t.StopTicker(done)
 	for n := range results {
 		fmt.Println(n)
 
 	}
 
+	// - Implement a simple HTTP server that serves static files and handles different HTTP methods (GET, POST, etc.).
 	s := https.Server{}
 
 	reqs := []https.Req{
 		{Target: "https://jsonplaceholder.typicode.com/todos/1", Verb: "GET", Dat: nil},
 		{Target: "https://jsonplaceholder.typicode.com/todos/2", Verb: "GET", Dat: nil},
 	}
+	var wg sync.WaitGroup
 
 	res := make(chan https.Res, len(reqs))
 
 	for _, req := range reqs {
-		go s.HandleReq(req, res)
+		wg.Add(1)
+		go func(req https.Req, wg *sync.WaitGroup) {
+			defer wg.Done()
+			s.HandleReq(req, res)
+		}(req, &wg)
 	}
-	close(res)
+	wg.Wait()
 
-	for range res {
-		fmt.Println(res)
+	close(res) // close channel for no incoming reqs
+
+	for r := range res {
+		fmt.Println(r)
 	}
 }
