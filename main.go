@@ -11,6 +11,7 @@ import (
 	"github.com/textures1245/practical-examples/examples/concurrently"
 	"github.com/textures1245/practical-examples/examples/error"
 	"github.com/textures1245/practical-examples/examples/generic"
+	"github.com/textures1245/practical-examples/examples/https"
 	"github.com/textures1245/practical-examples/examples/resource"
 	"github.com/textures1245/practical-examples/examples/timer"
 )
@@ -250,5 +251,24 @@ func timeTask() {
 	t.StopTicker(ticker, done)
 	for n := range results {
 		fmt.Println(n)
+
+	}
+
+	s := https.Server{}
+
+	reqs := []https.Req{
+		{Target: "https://jsonplaceholder.typicode.com/todos/1", Verb: "GET", Dat: nil},
+		{Target: "https://jsonplaceholder.typicode.com/todos/2", Verb: "GET", Dat: nil},
+	}
+
+	res := make(chan https.Res, len(reqs))
+
+	for _, req := range reqs {
+		go s.HandleReq(req, res)
+	}
+	close(res)
+
+	for range res {
+		fmt.Println(res)
 	}
 }
