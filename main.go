@@ -12,6 +12,7 @@ import (
 	"github.com/textures1245/practical-examples/examples/error"
 	"github.com/textures1245/practical-examples/examples/generic"
 	"github.com/textures1245/practical-examples/examples/https"
+	"github.com/textures1245/practical-examples/examples/logger"
 	"github.com/textures1245/practical-examples/examples/resource"
 	"github.com/textures1245/practical-examples/examples/timer"
 )
@@ -32,6 +33,8 @@ func (t *task) run() {
 		errorTask()
 	case 5:
 		timeTask()
+	case 6:
+		debugTask()
 	default:
 		fmt.Println("Invalid option")
 	}
@@ -39,7 +42,7 @@ func (t *task) run() {
 }
 
 func main() {
-	t := task{opt: 5}
+	t := task{opt: 6}
 	t.run()
 }
 
@@ -280,4 +283,21 @@ func timeTask() {
 	for r := range res {
 		fmt.Println(r)
 	}
+}
+
+func debugTask() {
+	normal_d := logger.NewConsoleLogger()
+
+	normal_d.Db.Error("Error")
+	normal_d.Db.Info("Info")
+	normal_d.Db.Debug("Debug")
+	normal_d.Db.Warn("Warn")
+
+	level := logger.Level("FETAL")
+	d_with_level := logger.NewConsoleLogger(level)
+
+	d_with_level.Db.Error("Error")
+	d_with_level.Db.Info("Info")
+	d_with_level.Db.Debug("Debug")
+	d_with_level.Db.Warn("Warn")
 }
